@@ -1,5 +1,9 @@
 ﻿import React, {createContext, ReactNode, useState} from "react";
 
+export const userDetailsContext = createContext({
+    username: "",
+    password: "",
+})
 export const LoginContext = createContext({
     isLoggedIn: false,
     isAdmin: false,
@@ -12,10 +16,10 @@ interface LoginManagerProps {
 }
 
 export function LoginManager(props: LoginManagerProps): JSX.Element {
-    const [loggedIn, setLoggedIn] = useState(true);
+    const [loggedIn, setLoggedIn] = useState(false);
     
     function logIn() {
-        setLoggedIn(true);
+            setLoggedIn(true);
     }
     
     function logOut() {

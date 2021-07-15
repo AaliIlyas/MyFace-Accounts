@@ -1,8 +1,9 @@
-﻿import React, {FormEvent, useState} from "react";
+﻿import React, {FormEvent, useState, useContext} from "react";
 import {Page} from "../Page/Page";
 import {createPost} from "../../Api/apiClient";
 import {Link} from "react-router-dom";
 import "./CreatePost.scss";
+import { userDetailsContext } from "../../Components/LoginManager/LoginManager";
 
 type FormStatus = "READY" | "SUBMITTING" | "ERROR" | "FINISHED"
 
@@ -12,10 +13,12 @@ export function CreatePostForm(): JSX.Element {
     const [userId, setUserId] = useState("");
     const [status, setStatus] = useState<FormStatus>("READY");
 
+    const userDetails = useContext(userDetailsContext);
+
     function submitForm(event: FormEvent) {
         event.preventDefault();
         setStatus("SUBMITTING");
-        createPost({message, imageUrl, userId: parseInt(userId)})
+        createPost({message, imageUrl, userId: parseInt(userId)}, userDetails.username, userDetails.password)
             .then(() => setStatus("FINISHED"))
             .catch(() => setStatus("ERROR"));
     }

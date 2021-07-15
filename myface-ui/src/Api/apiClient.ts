@@ -40,13 +40,21 @@ export interface NewPost {
     userId: number;
 }
 
-export async function fetchUsers(searchTerm: string, page: number, pageSize: number): Promise<ListResponse<User>> {
-    const response = await fetch(`https://localhost:5001/users?search=${searchTerm}&page=${page}&pageSize=${pageSize}`);
+export async function fetchUsers(searchTerm: string, page: number, pageSize: number, username: string, password: string): Promise<ListResponse<User>> {
+    const response = await fetch(`https://localhost:5001/users?search=${searchTerm}&page=${page}&pageSize=${pageSize}`, {
+        method: "GET",
+        headers: {
+            'Authorization': 'Basic ' + btoa(`${username}:${password}`)
+        }});
     return await response.json();
 }
 
-export async function fetchUser(userId: string | number): Promise<User> {
-    const response = await fetch(`https://localhost:5001/users/${userId}`);
+export async function fetchUser(userId: string | number, username: string, password: string): Promise<User> {
+    const response = await fetch(`https://localhost:5001/users/${userId}`, {
+        method: "GET",
+        headers: {
+            'Authorization': 'Basic ' + btoa(`${username}:${password}`)
+        }});
     return await response.json();
 }
 
@@ -70,15 +78,16 @@ export async function fetchPostsDislikedBy(page: number, pageSize: number, userI
     return await response.json();
 }
 
-export async function createPost(newPost: NewPost) {
+export async function createPost(newPost: NewPost, username: string, password: string) {
     const response = await fetch(`https://localhost:5001/posts/create`, {
         method: "POST",
         headers: {
+            'Authorization': 'Basic ' + btoa(`${username}:${password}`),
             "Content-Type": "application/json"
         },
         body: JSON.stringify(newPost),
     });
-    
+
     if (!response.ok) {
         throw new Error(await response.json())
     }
