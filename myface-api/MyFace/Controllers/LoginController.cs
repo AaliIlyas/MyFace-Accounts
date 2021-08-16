@@ -19,7 +19,7 @@ namespace MyFace.Controllers
             _posts = postsRepo;
         }
 
-        [HttpPost("")]
+        [HttpGet("")]
         public AuthenticationResult IsValidAuthentication ()
         {
             var authHeader = HttpContext.Request.Headers["Authorization"].ToString();

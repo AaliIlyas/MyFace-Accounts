@@ -1,14 +1,11 @@
 ﻿import React, {createContext, ReactNode, useState} from "react";
 
-export const userDetailsContext = createContext({
-    username: "",
-    password: "",
-})
 export const LoginContext = createContext({
     isLoggedIn: false,
     isAdmin: false,
     logIn: () => {},
     logOut: () => {},
+    btoaString: ""
 });
 
 interface LoginManagerProps {
@@ -31,6 +28,7 @@ export function LoginManager(props: LoginManagerProps): JSX.Element {
         isAdmin: loggedIn,
         logIn: logIn,
         logOut: logOut,
+        btoaString: ""
     };
     
     return (

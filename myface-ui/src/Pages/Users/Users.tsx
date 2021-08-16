@@ -5,15 +5,15 @@ import {fetchUsers} from "../../Api/apiClient";
 import {UserCard} from "../../Components/UserCard/UserCard";
 import {InfiniteList} from "../../Components/InfititeList/InfiniteList";
 import "./Users.scss";
-import { userDetailsContext } from "../../Components/LoginManager/LoginManager";
-import { UserDetails } from "../../Components/UserDetails/UserDetails";
+import { LoginContext } from "../../Components/LoginManager/LoginManager";
 
 export function Users(): JSX.Element {
     const [searchTerm, setSearchTerm] = useState("");
-    const userDetails = useContext(userDetailsContext);
+    const loginContext = useContext(LoginContext);
     
     function getUsers(page: number, pageSize: number) {
-        return fetchUsers(searchTerm, page, pageSize, userDetails.username, userDetails.password);
+
+        return fetchUsers(searchTerm, page, pageSize, loginContext.btoaString);
     }
     
     return (

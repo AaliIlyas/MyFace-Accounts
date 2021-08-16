@@ -1,35 +1,41 @@
 ﻿import React, { FormEvent, useContext, useState } from 'react';
 import { Page } from "../Page/Page";
-import { LoginContext, userDetailsContext } from "../../Components/LoginManager/LoginManager";
+import { LoginContext } from "../../Components/LoginManager/LoginManager";
 import "./Login.scss";
 
 export function Login(): JSX.Element {
     const loginContext = useContext(LoginContext);
-    const userDetails = useContext(userDetailsContext)
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     function tryLogin(event: FormEvent) {
+        console.log(username)
+        console.log(password)
         event.preventDefault();
+
+//         fetch('https://example.com/path', {method:'GET', 
+// headers: {'Authorization': 'Basic ' + btoa('login:password')}})
+
         fetch('https://localhost:5001/login', { 
-            method: 'post', 
+            method: 'GET', 
             headers: new Headers({
-              'Authorization': 'Basic '+btoa(`${username}:${password}`), 
-              'Content-Type': 'application/x-www-form-urlencoded'
+              'Authorization': 'Basic '+ btoa(`${username}:${password}`), 
+              'Content-Type': 'application/json'
             }), 
-            body: 'A=1&B=2'
+            //body: 'A=1&B=2'
           })
           .then(response => response.json())
           .then(response => {
               if (response.success == true) {
                   loginContext.logIn();
-                  userDetails.username = username;
-                  userDetails.password = password;
+                  loginContext.btoaString = 'Basic ' + btoa(`${username}:${password}`);
               } else {
                   setPassword("");
               }
-          })
+          }).catch(error => {
+              console.log(error)
+            });
     }
 
     return (
