@@ -1,8 +1,10 @@
-﻿import React, {FormEvent, useState} from "react";
+﻿import React, {FormEvent, useState, useContext} from "react";
 import {Page} from "../Page/Page";
 import {createPost} from "../../Api/apiClient";
 import {Link} from "react-router-dom";
 import "./CreatePost.scss";
+import { LoginContext } from "../../Components/LoginManager/LoginManager";
+import { createSolutionBuilderWithWatchHost } from "typescript";
 
 type FormStatus = "READY" | "SUBMITTING" | "ERROR" | "FINISHED"
 
@@ -12,12 +14,17 @@ export function CreatePostForm(): JSX.Element {
     const [userId, setUserId] = useState("");
     const [status, setStatus] = useState<FormStatus>("READY");
 
+    const loginContext = useContext(LoginContext);
+
     function submitForm(event: FormEvent) {
         event.preventDefault();
         setStatus("SUBMITTING");
-        createPost({message, imageUrl, userId: parseInt(userId)})
+        createPost({message, imageUrl, userId: parseInt(userId)}, loginContext.authString)
             .then(() => setStatus("FINISHED"))
-            .catch(() => setStatus("ERROR"));
+            .catch(() => {
+                setStatus("ERROR")
+                loginContext.logOut();
+            });
     }
     
     if (status === "FINISHED") {

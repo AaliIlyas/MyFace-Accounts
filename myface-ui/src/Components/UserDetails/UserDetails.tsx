@@ -1,6 +1,7 @@
-﻿import React, {useEffect, useState} from 'react';
+﻿import React, {useContext, useEffect, useState} from 'react';
 import {fetchUser, User} from "../../Api/apiClient";
 import "./UserDetails.scss";
+import { LoginContext } from "../../Components/LoginManager/LoginManager";
 
 interface UserDetailsProps {
     userId: string;
@@ -8,10 +9,14 @@ interface UserDetailsProps {
 
 export function UserDetails(props: UserDetailsProps): JSX.Element {
     const [user, setUser] = useState<User | null>(null);
+    const loginContext = useContext(LoginContext);
     
     useEffect(() => {
-        fetchUser(props.userId)
-            .then(response => setUser(response));
+        fetchUser(props.userId, loginContext.authString)
+            .then(response => setUser(response))
+            .catch(e => {
+                loginContext.logOut();
+                });;
     }, [props]);
     
     if (!user) {
