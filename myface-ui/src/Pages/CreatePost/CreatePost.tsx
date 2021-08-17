@@ -15,11 +15,9 @@ export function CreatePostForm(): JSX.Element {
     const [status, setStatus] = useState<FormStatus>("READY");
 
     const loginContext = useContext(LoginContext);
-    console.log("unused CreatePost: " + loginContext.btoaString);
 
     function submitForm(event: FormEvent) {
         event.preventDefault();
-        console.log("CreatePost.tsx: " + loginContext.btoaString)
         setStatus("SUBMITTING");
         createPost({message, imageUrl, userId: parseInt(userId)}, loginContext.btoaString)
             .then(() => setStatus("FINISHED"))

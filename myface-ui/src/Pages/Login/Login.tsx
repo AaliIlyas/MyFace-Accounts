@@ -10,12 +10,7 @@ export function Login(): JSX.Element {
     const [password, setPassword] = useState("");
 
     function tryLogin(event: FormEvent) {
-        console.log(username)
-        console.log(password)
         event.preventDefault();
-
-//         fetch('https://example.com/path', {method:'GET', 
-// headers: {'Authorization': 'Basic ' + btoa('login:password')}})
 
         fetch('https://localhost:5001/login', { 
             method: 'GET', 
@@ -23,13 +18,11 @@ export function Login(): JSX.Element {
               'Authorization': 'Basic '+ btoa(`${username}:${password}`), 
               'Content-Type': 'application/json'
             }), 
-            //body: 'A=1&B=2'
           })
           .then(response => response.json())
           .then(response => {
               if (response.success == true) {
                   loginContext.logIn('Basic ' + btoa(`${username}:${password}`));
-                  console.log("Set location: " + loginContext.btoaString)
               } else {
                   setPassword("");
               }
@@ -51,7 +44,6 @@ export function Login(): JSX.Element {
                     Password
                     <input className="form-input" type={"password"} value={password} onChange={event => setPassword(event.target.value)} />
                 </label>
-
                 <button className="submit-button" type="submit">Log In</button>
             </form>
         </Page>
