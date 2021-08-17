@@ -43,12 +43,14 @@ export interface NewPost {
 }
 
 export async function fetchUsers(searchTerm: string, page: number, pageSize: number, btoaString: string): Promise<ListResponse<User>> {
+    // debugger;
     const response = await fetch(`https://localhost:5001/users?search=${searchTerm}&page=${page}&pageSize=${pageSize}`, {
         method: "GET",
         headers: {
             'Authorization': btoaString
         }
     });
+
     const status = await response.status;
 
     if (response.status === 401) {
@@ -76,6 +78,8 @@ export async function fetchUser(userId: string | number, btoaString: string): Pr
 }
 
 export async function fetchPosts(page: number, pageSize: number, btoaString: string): Promise<ListResponse<Post>> {
+    // debugger;
+    // console.log(btoaString);
     const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}`, {
         method: "GET",
         headers: {
@@ -144,6 +148,7 @@ export async function fetchPostsDislikedBy(page: number, pageSize: number, userI
 }
 
 export async function createPost(newPost: NewPost, btoaString: string) {
+    console.log("apiClient createPost: " + btoaString);
     const response = await fetch(`https://localhost:5001/posts/create`, {
         method: "POST",
         headers: {

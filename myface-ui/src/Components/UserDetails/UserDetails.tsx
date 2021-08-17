@@ -15,7 +15,6 @@ export function UserDetails(props: UserDetailsProps): JSX.Element {
         fetchUser(props.userId, loginContext.btoaString)
             .then(response => setUser(response))
             .catch(e => {
-                loginContext.btoaString = "";
                 loginContext.logOut();
                 });;
     }, [props]);

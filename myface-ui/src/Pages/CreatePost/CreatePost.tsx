@@ -4,6 +4,7 @@ import {createPost} from "../../Api/apiClient";
 import {Link} from "react-router-dom";
 import "./CreatePost.scss";
 import { LoginContext } from "../../Components/LoginManager/LoginManager";
+import { createSolutionBuilderWithWatchHost } from "typescript";
 
 type FormStatus = "READY" | "SUBMITTING" | "ERROR" | "FINISHED"
 
@@ -14,16 +15,17 @@ export function CreatePostForm(): JSX.Element {
     const [status, setStatus] = useState<FormStatus>("READY");
 
     const loginContext = useContext(LoginContext);
+    console.log("unused CreatePost: " + loginContext.btoaString);
 
     function submitForm(event: FormEvent) {
         event.preventDefault();
+        console.log("CreatePost.tsx: " + loginContext.btoaString)
         setStatus("SUBMITTING");
         createPost({message, imageUrl, userId: parseInt(userId)}, loginContext.btoaString)
             .then(() => setStatus("FINISHED"))
             .catch(() => {
                 setStatus("ERROR")
                 loginContext.logOut();
-                loginContext.btoaString = "";
             });
     }
     

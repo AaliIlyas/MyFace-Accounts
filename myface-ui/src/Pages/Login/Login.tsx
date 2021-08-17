@@ -28,8 +28,8 @@ export function Login(): JSX.Element {
           .then(response => response.json())
           .then(response => {
               if (response.success == true) {
-                  loginContext.logIn();
-                  loginContext.btoaString = 'Basic ' + btoa(`${username}:${password}`);
+                  loginContext.logIn('Basic ' + btoa(`${username}:${password}`));
+                  console.log("Set location: " + loginContext.btoaString)
               } else {
                   setPassword("");
               }

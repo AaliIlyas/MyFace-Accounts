@@ -31,7 +31,6 @@ export function InfiniteList<T>(props: InfiniteListProps<T>): JSX.Element {
         props.fetchItems(1, 10, loginContext.btoaString)
             .then(replaceItems)
             .catch(e => {
-                loginContext.btoaString = "";
                 loginContext.logOut();
                 });
     }, [props]);
@@ -40,7 +39,6 @@ export function InfiniteList<T>(props: InfiniteListProps<T>): JSX.Element {
         props.fetchItems(page + 1, 10, loginContext.btoaString)
             .then(appendItems)
             .catch(e => {
-                loginContext.btoaString = "";
                 loginContext.logOut();
                 });
     }

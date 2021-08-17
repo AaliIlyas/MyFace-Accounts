@@ -17,7 +17,6 @@ export function PostList(props: PostListProps): JSX.Element {
         props.fetchPosts()
             .then(response => setPosts(response.items))
             .catch(e => {
-                loginContext.btoaString = "";
                 loginContext.logOut();
                 });
     }, [props]);

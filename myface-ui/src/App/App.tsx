@@ -31,7 +31,7 @@ function Routes(): ReactElement {
 export default function App(): ReactElement {
     return (
         <Router>
-            <LoginManager>
+            <LoginManager>  {/*Wraps the whole thing in LoginContext.Provider with context*/}
                 <Routes/>
             </LoginManager>
         </Router>

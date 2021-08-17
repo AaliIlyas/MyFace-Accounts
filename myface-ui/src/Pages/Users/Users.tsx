@@ -12,7 +12,7 @@ export function Users(): JSX.Element {
     const loginContext = useContext(LoginContext);
     
     function getUsers(page: number, pageSize: number) {
-
+        // console.log(loginContext.btoaString);
         return fetchUsers(searchTerm, page, pageSize, loginContext.btoaString);
     }
     
