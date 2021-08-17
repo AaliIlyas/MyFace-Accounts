@@ -5,7 +5,7 @@ export const LoginContext = createContext({
     isAdmin: false,
     logIn: (basicString: string) => {},
     logOut: () => {},
-    btoaString: ""
+    authString: ""
 });
 
 interface LoginManagerProps {
@@ -15,16 +15,16 @@ interface LoginManagerProps {
 export function LoginManager(props: LoginManagerProps): JSX.Element {
     const [loggedIn, setLoggedIn] = useState(false);
     const [admin, setAdmin] = useState(false);
-    const [btoaString, setBtoaString] = useState("")
+    const [authString, setAuthString] = useState("");
     
     function logIn(basicString: string) {
         setLoggedIn(true);
-        setBtoaString(basicString);
+        setAuthString(basicString);
     }
     
     function logOut() {
         setLoggedIn(false);
-        setBtoaString("");
+        setAuthString("");
     }
     
     const context = {
@@ -32,7 +32,7 @@ export function LoginManager(props: LoginManagerProps): JSX.Element {
         isAdmin: false,
         logIn: logIn,
         logOut: logOut,
-        btoaString: btoaString
+        authString: authString
     };
     
     return (

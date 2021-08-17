@@ -28,7 +28,7 @@ export function InfiniteList<T>(props: InfiniteListProps<T>): JSX.Element {
     }
     
     useEffect(() => {
-        props.fetchItems(1, 10, loginContext.btoaString)
+        props.fetchItems(1, 10, loginContext.authString)
             .then(replaceItems)
             .catch(e => {
                 loginContext.logOut();
@@ -36,7 +36,7 @@ export function InfiniteList<T>(props: InfiniteListProps<T>): JSX.Element {
     }, [props]);
 
     function incrementPage() {
-        props.fetchItems(page + 1, 10, loginContext.btoaString)
+        props.fetchItems(page + 1, 10, loginContext.authString)
             .then(appendItems)
             .catch(e => {
                 loginContext.logOut();

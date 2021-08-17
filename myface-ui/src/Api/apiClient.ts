@@ -78,8 +78,6 @@ export async function fetchUser(userId: string | number, btoaString: string): Pr
 }
 
 export async function fetchPosts(page: number, pageSize: number, btoaString: string): Promise<ListResponse<Post>> {
-    // debugger;
-    // console.log(btoaString);
     const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}`, {
         method: "GET",
         headers: {
@@ -148,7 +146,6 @@ export async function fetchPostsDislikedBy(page: number, pageSize: number, userI
 }
 
 export async function createPost(newPost: NewPost, btoaString: string) {
-    console.log("apiClient createPost: " + btoaString);
     const response = await fetch(`https://localhost:5001/posts/create`, {
         method: "POST",
         headers: {
@@ -158,7 +155,12 @@ export async function createPost(newPost: NewPost, btoaString: string) {
         body: JSON.stringify(newPost),
     });
 
-    if (!response.ok) {
+    //previously, (!response.ok)
+    if (response.status === 401) {
         throw new Error(await response.json())
+    }
+
+    if (response.status !== 200) {
+        return response.status;
     }
 }

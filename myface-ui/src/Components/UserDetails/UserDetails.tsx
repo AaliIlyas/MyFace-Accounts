@@ -12,7 +12,7 @@ export function UserDetails(props: UserDetailsProps): JSX.Element {
     const loginContext = useContext(LoginContext);
     
     useEffect(() => {
-        fetchUser(props.userId, loginContext.btoaString)
+        fetchUser(props.userId, loginContext.authString)
             .then(response => setUser(response))
             .catch(e => {
                 loginContext.logOut();
