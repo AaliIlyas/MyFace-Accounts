@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MyFace.Models.Enums;
 
 namespace MyFace.Models.Database
 {
@@ -18,6 +19,7 @@ namespace MyFace.Models.Database
         public string CoverImageUrl { get; set; }
         public string HashedPassword { get; set; }
         public string Salt { get; set; }
+        public Role Role { get; set; }
         public ICollection<Post> Posts { get; set; } = new List<Post>();
         public ICollection<Interaction> Interactions { get; set; } = new List<Interaction>();
     }

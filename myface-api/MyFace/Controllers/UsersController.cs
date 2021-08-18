@@ -98,13 +98,20 @@ namespace MyFace.Controllers
         {
             var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
             var authenticated = _posts.IsAthenticated(authHeader);
+            var admin = _posts.IsAdmin(authHeader);
 
             if (!authenticated)
             {
                 return Unauthorized();
             }
-                _users.Delete(id);
-                return Ok();
+
+            if (!admin)
+            {
+                return StatusCode(403);
+            }
+
+            _users.Delete(id);
+            return Ok();
         }
     }
 }

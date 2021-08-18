@@ -20,6 +20,7 @@ namespace MyFace.Repositories
         Post Update(int id, UpdatePostRequest update);
         void Delete(int id);
         bool IsAthenticated(string authHeader);
+        bool IsAdmin(string authHeader);
     }
     
     public class PostsRepo : IPostsRepo
@@ -145,6 +146,21 @@ namespace MyFace.Repositories
             {
                 return false;
             }
+        }
+
+        public bool IsAdmin(string authHeader)
+        {
+            var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+            var encoding = Encoding.GetEncoding("iso-8859-1");
+            var usernamePassword = encoding.GetString(Convert.FromBase64String(encodedUsernamePassword));
+            var seperatorIndex = usernamePassword.IndexOf(':');
+            var username = usernamePassword.Substring(0, seperatorIndex);
+
+            var user = _context.Users
+                .Where(u => u.Username == username)
+                .Single();
+
+            return user.Role == Models.Enums.Role.ADMIN;
         }
     }
 }

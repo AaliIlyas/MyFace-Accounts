@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MyFace.Models.Database;
+using MyFace.Models.Enums;
 using MyFace.Models.Request;
 using MyFace.Repositories;
 
@@ -131,7 +132,8 @@ namespace MyFace.Data
                 ProfileImageUrl = ImageGenerator.GetProfileImage(_data[index][2]),
                 CoverImageUrl = ImageGenerator.GetCoverImage(index),
                 Salt = salt,
-                HashedPassword = UsersRepo.CreateHash(salt, "Password1")
+                HashedPassword = UsersRepo.CreateHash(salt, "Password1"),
+                Role = _data[index][2] == "bmaclise1z" ? Role.ADMIN : Role.MEMBER
             };
         }
     }
