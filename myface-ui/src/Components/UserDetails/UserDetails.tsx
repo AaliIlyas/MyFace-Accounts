@@ -17,7 +17,7 @@ export function UserDetails(props: UserDetailsProps): JSX.Element {
             .catch(e => {
                 loginContext.logOut();
                 });;
-    }, [props]);
+    }, [props, loginContext]);
     
     if (!user) {
         return <section>Loading...</section>

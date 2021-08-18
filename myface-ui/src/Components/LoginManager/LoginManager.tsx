@@ -18,8 +18,8 @@ export function LoginManager(props: LoginManagerProps): JSX.Element {
     const [authString, setAuthString] = useState("");
     
     function logIn(basicString: string) {
-        setLoggedIn(true);
         setAuthString(basicString);
+        setLoggedIn(true);
     }
     
     function logOut() {

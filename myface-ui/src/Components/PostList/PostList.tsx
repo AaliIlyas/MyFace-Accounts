@@ -19,7 +19,7 @@ export function PostList(props: PostListProps): JSX.Element {
             .catch(e => {
                 loginContext.logOut();
                 });
-    }, [props]);
+    }, [props, loginContext]);
     
     return (
         <section>

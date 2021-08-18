@@ -42,12 +42,12 @@ export interface NewPost {
     userId: number;
 }
 
-export async function fetchUsers(searchTerm: string, page: number, pageSize: number, btoaString: string): Promise<ListResponse<User>> {
+export async function fetchUsers(searchTerm: string, page: number, pageSize: number, authString: string): Promise<ListResponse<User>> {
     // debugger;
     const response = await fetch(`https://localhost:5001/users?search=${searchTerm}&page=${page}&pageSize=${pageSize}`, {
         method: "GET",
         headers: {
-            'Authorization': btoaString
+            'Authorization': authString
         }
     });
 
@@ -60,11 +60,11 @@ export async function fetchUsers(searchTerm: string, page: number, pageSize: num
     return await response.json();
 }
 
-export async function fetchUser(userId: string | number, btoaString: string): Promise<User> {
+export async function fetchUser(userId: string | number, authString: string): Promise<User> {
     const response = await fetch(`https://localhost:5001/users/${userId}`, {
         method: "GET",
         headers: {
-            'Authorization': btoaString
+            'Authorization': authString
         }
     });
 
@@ -77,11 +77,12 @@ export async function fetchUser(userId: string | number, btoaString: string): Pr
     return await response.json();
 }
 
-export async function fetchPosts(page: number, pageSize: number, btoaString: string): Promise<ListResponse<Post>> {
+export async function fetchPosts(page: number, pageSize: number, authString: string): Promise<ListResponse<Post>> {
+    console.log("fetchPosts apiClient: " + authString);
     const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}`, {
         method: "GET",
         headers: {
-            'Authorization': btoaString
+            'Authorization': authString
         }
     });
 
@@ -94,11 +95,11 @@ export async function fetchPosts(page: number, pageSize: number, btoaString: str
     return await response.json();
 }
 
-export async function fetchPostsForUser(page: number, pageSize: number, userId: string | number, btoaString: string) {
+export async function fetchPostsForUser(page: number, pageSize: number, userId: string | number, authString: string) {
     const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}&postedBy=${userId}`, {
         method: "GET",
         headers: {
-            'Authorization': btoaString
+            'Authorization': authString
         }
     });
 
@@ -111,11 +112,11 @@ export async function fetchPostsForUser(page: number, pageSize: number, userId: 
     return await response.json();
 }
 
-export async function fetchPostsLikedBy(page: number, pageSize: number, userId: string | number, btoaString: string) {
+export async function fetchPostsLikedBy(page: number, pageSize: number, userId: string | number, authString: string) {
     const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}&likedBy=${userId}`, {
         method: "GET",
         headers: {
-            'Authorization': btoaString
+            'Authorization': authString
         }
     });
 
@@ -128,11 +129,11 @@ export async function fetchPostsLikedBy(page: number, pageSize: number, userId: 
     return await response.json();
 }
 
-export async function fetchPostsDislikedBy(page: number, pageSize: number, userId: string | number, btoaString: string) {
+export async function fetchPostsDislikedBy(page: number, pageSize: number, userId: string | number, authString: string) {
     const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}&dislikedBy=${userId}`, {
         method: "GET",
         headers: {
-            'Authorization': btoaString
+            'Authorization': authString
         }
     });
 
@@ -145,11 +146,11 @@ export async function fetchPostsDislikedBy(page: number, pageSize: number, userI
     return await response.json();
 }
 
-export async function createPost(newPost: NewPost, btoaString: string) {
+export async function createPost(newPost: NewPost, authString: string) {
     const response = await fetch(`https://localhost:5001/posts/create`, {
         method: "POST",
         headers: {
-            'Authorization': btoaString,
+            'Authorization': authString,
             "Content-Type": "application/json"
         },
         body: JSON.stringify(newPost),
@@ -158,9 +159,5 @@ export async function createPost(newPost: NewPost, btoaString: string) {
     //previously, (!response.ok)
     if (response.status === 401) {
         throw new Error(await response.json())
-    }
-
-    if (response.status !== 200) {
-        return response.status;
     }
 }

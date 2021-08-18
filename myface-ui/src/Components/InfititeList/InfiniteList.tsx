@@ -33,7 +33,7 @@ export function InfiniteList<T>(props: InfiniteListProps<T>): JSX.Element {
             .catch(e => {
                 loginContext.logOut();
                 });
-    }, [props]);
+    }, [props, loginContext]);
 
     function incrementPage() {
         props.fetchItems(page + 1, 10, loginContext.authString)

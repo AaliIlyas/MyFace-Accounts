@@ -12,22 +12,22 @@ export function Login(): JSX.Element {
     function tryLogin(event: FormEvent) {
         event.preventDefault();
 
-        fetch('https://localhost:5001/login', { 
-            method: 'GET', 
+        fetch('https://localhost:5001/login', {
+            method: 'GET',
             headers: new Headers({
-              'Authorization': 'Basic '+ btoa(`${username}:${password}`), 
-              'Content-Type': 'application/json'
-            }), 
-          })
-          .then(response => response.json())
-          .then(response => {
-              if (response.success == true) {
-                  loginContext.logIn('Basic ' + btoa(`${username}:${password}`));
-              } else {
-                  setPassword("");
-              }
-          }).catch(error => {
-              console.log(error)
+                'Authorization': 'Basic ' + btoa(`${username}:${password}`),
+                'Content-Type': 'application/json'
+            }),
+        })
+            .then(response => response.json())
+            .then(response => {
+                if (response.success) {
+                    loginContext.logIn('Basic ' + btoa(`${username}:${password}`));
+                } else {
+                    setPassword("");
+                }
+            }).catch(error => {
+                console.log(error)
             });
     }
 

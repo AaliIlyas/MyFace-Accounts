@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, { useContext } from 'react';
 import {Page} from "../Page/Page";
 import {fetchPosts} from "../../Api/apiClient";
 import {PostCard} from "../../Components/PostCard/PostCard";

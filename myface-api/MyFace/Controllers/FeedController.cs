@@ -18,13 +18,13 @@ namespace MyFace.Controllers
         [HttpGet("")]
         public ActionResult<FeedModel> GetFeed([FromQuery] FeedSearchRequest searchRequest)
         {
-            //var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
-            //var authenticated = _posts.IsAthenticated(authHeader);
+            var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            var authenticated = _posts.IsAthenticated(authHeader);
 
-            //if (!authenticated)
-            //{
-            //    return Unauthorized();
-            //}
+            if (!authenticated)
+            {
+                return Unauthorized();
+            }
 
             var posts = _posts.SearchFeed(searchRequest);
             var postCount = _posts.Count(searchRequest);
