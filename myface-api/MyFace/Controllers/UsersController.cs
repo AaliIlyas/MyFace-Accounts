@@ -93,6 +93,27 @@ namespace MyFace.Controllers
             return new UserResponse(user);
         }
 
+        [HttpPatch("{id}")]
+        public IActionResult ConfigureAdmin([FromRoute] int id)
+        {
+            var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            var authenticated = _posts.IsAthenticated(authHeader);
+            var admin = _posts.IsAdmin(authHeader);
+
+            if (!authenticated)
+            {
+                return Unauthorized();
+            }
+
+            if (!admin)
+            {
+                return StatusCode(403);
+            }
+
+            _users.ConfigureAdmin(id);
+            return Ok();
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {

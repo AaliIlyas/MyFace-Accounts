@@ -17,9 +17,10 @@ namespace MyFace.Repositories
         User GetById(int id);
         User Create(CreateUserRequest newUser);
         User Update(int id, UpdateUserRequest update);
+        void ConfigureAdmin(int id);
         void Delete(int id);
     }
-    
+
     public class UsersRepo : IUsersRepo
     {
         private readonly MyFaceDbContext _context;
@@ -28,11 +29,11 @@ namespace MyFace.Repositories
         {
             _context = context;
         }
-        
+
         public IEnumerable<User> Search(UserSearchRequest search)
         {
             return _context.Users
-                .Where(p => search.Search == null || 
+                .Where(p => search.Search == null ||
                             (
                                 p.FirstName.ToLower().Contains(search.Search) ||
                                 p.LastName.ToLower().Contains(search.Search) ||
@@ -47,7 +48,7 @@ namespace MyFace.Repositories
         public int Count(UserSearchRequest search)
         {
             return _context.Users
-                .Count(p => search.Search == null || 
+                .Count(p => search.Search == null ||
                             (
                                 p.FirstName.ToLower().Contains(search.Search) ||
                                 p.LastName.ToLower().Contains(search.Search) ||
@@ -98,6 +99,13 @@ namespace MyFace.Repositories
             _context.SaveChanges();
 
             return user;
+        }
+
+        public void ConfigureAdmin(int id)
+        {
+            var user = GetById(id);
+            user.Role = user.Role == Models.Enums.Role.MEMBER ? Models.Enums.Role.ADMIN : Models.Enums.Role.MEMBER;
+            _context.SaveChanges();
         }
 
         public void Delete(int id)
