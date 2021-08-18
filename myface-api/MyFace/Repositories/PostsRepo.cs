@@ -16,7 +16,7 @@ namespace MyFace.Repositories
         int Count(PostSearchRequest search);
         int CountFeed(FeedSearchRequest searchRequest);
         Post GetById(int id);
-        Post Create(CreatePostRequest post);
+        Post Create(CreatePostRequest post, string authHeader);
         Post Update(int id, UpdatePostRequest update);
         void Delete(int id);
         bool IsAthenticated(string authHeader);
@@ -76,14 +76,25 @@ namespace MyFace.Repositories
                 .Single(post => post.Id == id);
         }
 
-        public Post Create(CreatePostRequest post)
+        public Post Create(CreatePostRequest post, string authHeader)
         {
+            var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+            var encoding = Encoding.GetEncoding("iso-8859-1");
+            var usernamePassword = encoding.GetString(Convert.FromBase64String(encodedUsernamePassword));
+            var seperatorIndex = usernamePassword.IndexOf(':');
+            var username = usernamePassword.Substring(0, seperatorIndex);
+
+            var userId = _context.Users
+                .Where(u => u.Username == username)
+                .Single()
+                .Id;
+
             var insertResult = _context.Posts.Add(new Post
             {
                 ImageUrl = post.ImageUrl,
                 Message = post.Message,
                 PostedAt = DateTime.Now,
-                UserId = post.UserId,
+                UserId = userId
             });
             _context.SaveChanges();
             return insertResult.Entity;

@@ -12,10 +12,12 @@ namespace MyFace.Controllers
         public class UsersController : ControllerBase
         {
             private readonly IInteractionsRepo _interactions;
+            private readonly IPostsRepo _posts;
 
-            public UsersController(IInteractionsRepo interactions)
+            public UsersController(IInteractionsRepo interactions, IPostsRepo posts)
             {
                 _interactions = interactions;
+                _posts = posts;
             }
         
             [HttpGet("")]
@@ -36,12 +38,20 @@ namespace MyFace.Controllers
             [HttpPost("create")]
             public IActionResult Create([FromBody] CreateInteractionRequest newUser)
             {
+                var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
+                var authenticated = _posts.IsAthenticated(authHeader);
+
+                if (!authenticated)
+                {
+                    return Unauthorized();
+                }
+
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
             
-                var interaction = _interactions.Create(newUser);
+                var interaction = _interactions.Create(newUser, authHeader);
 
                 var url = Url.Action("GetById", new { id = interaction.Id });
                 var responseViewModel = new InteractionResponse(interaction);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using MyFace.Models.Database;
 using MyFace.Models.Request;
 
@@ -11,10 +12,10 @@ namespace MyFace.Repositories
         IEnumerable<Interaction> Search(SearchRequest search);
         int Count(SearchRequest search);
         Interaction GetById(int id);
-        Interaction Create(CreateInteractionRequest create);
+        Interaction Create(CreateInteractionRequest create, string authHeader);
         void Delete(int id);
     }
-    
+
     public class InteractionsRepo : IInteractionsRepo
     {
         private readonly MyFaceDbContext _context;
@@ -23,7 +24,7 @@ namespace MyFace.Repositories
         {
             _context = context;
         }
-        
+
         public IEnumerable<Interaction> Search(SearchRequest search)
         {
             return _context.Interactions
@@ -41,14 +42,25 @@ namespace MyFace.Repositories
             return _context.Interactions.Single(i => i.Id == id);
         }
 
-        public Interaction Create(CreateInteractionRequest create)
+        public Interaction Create(CreateInteractionRequest create, string authHeader)
         {
+            var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+            var encoding = Encoding.GetEncoding("iso-8859-1");
+            var usernamePassword = encoding.GetString(Convert.FromBase64String(encodedUsernamePassword));
+            var seperatorIndex = usernamePassword.IndexOf(':');
+            var username = usernamePassword.Substring(0, seperatorIndex);
+
+            var userId = _context.Users
+                .Where(u => u.Username == username)
+                .Single()
+                .Id;
+
             var insertResult = _context.Interactions.Add(new Interaction
             {
                 Date = DateTime.Now,
                 Type = create.InteractionType,
                 PostId = create.PostId,
-                UserId = create.UserId,
+                UserId = userId,
             });
             _context.SaveChanges();
             return insertResult.Entity;
