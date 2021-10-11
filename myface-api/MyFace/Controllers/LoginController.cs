@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyFace.Helpers;
 using MyFace.Repositories;
+using System;
 
 namespace MyFace.Controllers
 {
@@ -22,8 +24,15 @@ namespace MyFace.Controllers
         [HttpGet("")]
         public AuthenticationResult IsValidAuthentication ()
         {
+            var baseUrl = Url.Content("~/");
             var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
             var authenticated = _posts.IsAthenticated(authHeader);
+            var user = _posts.GetUserFromEncoded(authHeader);
+
+            if (authenticated)
+            {
+                var token = JWTToken.GenerateToken(user.Id, user.Role, baseUrl);
+            }
 
             return new AuthenticationResult()
             {

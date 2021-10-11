@@ -16,6 +16,7 @@ namespace MyFace.Repositories
         int Count(PostSearchRequest search);
         int CountFeed(FeedSearchRequest searchRequest);
         Post GetById(int id);
+        User GetUserFromEncoded(string username);
         Post Create(CreatePostRequest post, string authHeader);
         Post Update(int id, UpdatePostRequest update);
         void Delete(int id);
@@ -75,6 +76,18 @@ namespace MyFace.Repositories
         {
             return _context.Posts
                 .Single(post => post.Id == id);
+        }
+
+        public User GetUserFromEncoded(string authHeader)
+        {
+            //TODO - Refactor repeated code.
+            var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+            var encoding = Encoding.GetEncoding("iso-8859-1");
+            var usernamePassword = encoding.GetString(Convert.FromBase64String(encodedUsernamePassword));
+            var seperatorIndex = usernamePassword.IndexOf(':');
+            var username = usernamePassword.Substring(0, seperatorIndex);
+
+            return _context.Users.Single(u => u.Username == username);
         }
 
         public Post Create(CreatePostRequest post, string authHeader)
@@ -162,5 +175,6 @@ namespace MyFace.Repositories
 
             return user.Role == Models.Enums.Role.ADMIN;
         }
+
     }
 }
