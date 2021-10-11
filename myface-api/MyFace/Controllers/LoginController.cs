@@ -24,7 +24,7 @@ namespace MyFace.Controllers
         [HttpGet("")]
         public AuthenticationResult IsValidAuthentication ()
         {
-            var baseUrl = Url.Content("~/");
+            var baseUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
             var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
             var authenticated = _posts.IsAthenticated(authHeader);
             var user = _posts.GetUserFromEncoded(authHeader);

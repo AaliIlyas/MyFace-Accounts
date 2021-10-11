@@ -10,7 +10,7 @@ using MyFace.Models.Enums;
 
 namespace MyFace.Helpers
 {
-    public class JWTToken
+    public class JWT
     {
         public static string GenerateToken(int userId, Role role, string issuer)
         {
