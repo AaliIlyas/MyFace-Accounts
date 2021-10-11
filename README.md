@@ -1,6 +1,6 @@
 # MyFace
 
-This is a very basic social media application.
+This is a basic social media application. You can submit posts with an image and a description, search and view user profiles. Roles based authorisation for admins to delete posts (Postman only for now).
 
 ## Setup
 
