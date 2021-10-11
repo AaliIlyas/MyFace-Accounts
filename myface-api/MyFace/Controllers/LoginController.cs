@@ -31,7 +31,7 @@ namespace MyFace.Controllers
 
             if (authenticated)
             {
-                var token = JWTToken.GenerateToken(user.Id, user.Role, baseUrl);
+                var token = JWT.GenerateToken(user.Id, user.Role, baseUrl);
             }
 
             return new AuthenticationResult()
