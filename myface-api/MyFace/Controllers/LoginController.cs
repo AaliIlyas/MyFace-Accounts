@@ -1,17 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using MyFace.Helpers;
 using MyFace.Repositories;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Text;
 
 namespace MyFace.Controllers
 {
     public class AuthenticationResult
     {
         public bool Success { get; set; }
+        public string Role { get; set; }
+        public string Token { get; set; }
     }
 
     [ApiController]
@@ -20,68 +17,53 @@ namespace MyFace.Controllers
     {
         private readonly IPostsRepo _posts;
 
-        public LoginController (IPostsRepo postsRepo)
+        public LoginController(IPostsRepo postsRepo)
         {
             _posts = postsRepo;
         }
 
         [HttpGet("")]
-        public AuthenticationResult IsValidAuthentication ()
+        public IActionResult IsValidAuthentication()
         {
             var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";
             var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
             var authenticated = _posts.IsAthenticated(authHeader);
             var user = _posts.GetUserFromEncoded(authHeader);
+            var token = JWT.GenerateToken(user.Id, user.Role, baseUrl);
 
             if (authenticated)
             {
-                var token = JWT.GenerateToken(user.Id, user.Role, baseUrl);
+                return Ok(new AuthenticationResult()
+                {
+                    Success = authenticated,
+                    Role = user.Role.ToString(),
+                    Token = token
+                });
             }
 
-            return new AuthenticationResult()
-            {
-                Success = authenticated
-            };
+            return Unauthorized();
         }
 
         [HttpGet("validate")]
-        public bool ValidateCurrentToken(string token)
+        public IActionResult Validate(string token)
         {
+            //Response.Cookies
+            HttpCookie myCookie = new HttpCookie("myCookie");
             var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";
-            var mySecret = "asdv234234^&%&^%&^hjsdfb2%%%";
-            var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
+            var valid = JWT.ValidateCurrentToken(token, baseUrl);
+            var claim = JWT.GetClaim(token, "Role");
 
-            var myIssuer = baseUrl;
-            var myAudience = "http://localhost:3000";
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            try
+            if (valid)
             {
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                return Ok(new AuthenticationResult()
                 {
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidIssuer = myIssuer,
-                    ValidAudience = myAudience,
-                    IssuerSigningKey = mySecurityKey
-                }, out SecurityToken validatedToken);
+                    Success = valid,
+                    Role = claim,
+                    Token = token
+                });
             }
-            catch
-            {
-                return false;
-            }
-            return true;
-        }
 
-        [HttpGet("claim")]
-        public string GetClaim(string token, string claimType)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var securityToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
-
-            var stringClaimValue = securityToken.Claims.First(claim => claim.Type == claimType).Value;
-            return stringClaimValue;
+            return Forbid();
         }
     }
 }
