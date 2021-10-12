@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using MyFace.Helpers;
 using MyFace.Repositories;
+using System;
 
 namespace MyFace.Controllers
 {
@@ -8,7 +10,6 @@ namespace MyFace.Controllers
     {
         public bool Success { get; set; }
         public string Role { get; set; }
-        public string Token { get; set; }
     }
 
     [ApiController]
@@ -33,11 +34,15 @@ namespace MyFace.Controllers
 
             if (authenticated)
             {
+                var options = new CookieOptions();
+                options.Expires = DateTime.Now.AddMinutes(1);
+                options.HttpOnly = true;
+                Response.Cookies.Append("JWT", token, options);
+
                 return Ok(new AuthenticationResult()
                 {
                     Success = authenticated,
-                    Role = user.Role.ToString(),
-                    Token = token
+                    Role = user.Role.ToString()
                 });
             }
 
@@ -45,10 +50,9 @@ namespace MyFace.Controllers
         }
 
         [HttpGet("validate")]
-        public IActionResult Validate(string token)
+        public IActionResult Validate()
         {
-            //Response.Cookies
-            HttpCookie myCookie = new HttpCookie("myCookie");
+            var token = HttpContext.Request.Cookies["JWT"];
             var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";
             var valid = JWT.ValidateCurrentToken(token, baseUrl);
             var claim = JWT.GetClaim(token, "Role");
@@ -58,8 +62,7 @@ namespace MyFace.Controllers
                 return Ok(new AuthenticationResult()
                 {
                     Success = valid,
-                    Role = claim,
-                    Token = token
+                    Role = claim
                 });
             }
 
