@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyFace.Helpers;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
@@ -14,14 +15,15 @@ namespace MyFace.Controllers
         {
             _posts = posts;
         }
-        
+
         [HttpGet("")]
         public ActionResult<FeedModel> GetFeed([FromQuery] FeedSearchRequest searchRequest)
         {
-            var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
-            var authenticated = _posts.IsAthenticated(authHeader);
+            var token = HttpContext.Request.Cookies["JWT"];
+            var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";
+            var valid = JWT.ValidateCurrentToken(token, baseUrl);
 
-            if (!authenticated)
+            if (!valid)
             {
                 return Unauthorized();
             }

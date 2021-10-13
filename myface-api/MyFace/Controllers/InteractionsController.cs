@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyFace.Helpers;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
@@ -39,7 +40,10 @@ namespace MyFace.Controllers
             public IActionResult Create([FromBody] CreateInteractionRequest newUser)
             {
                 var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
-                var authenticated = _posts.IsAthenticated(authHeader);
+
+                var token = HttpContext.Request.Cookies["JWT"];
+                var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";
+                var authenticated = JWT.ValidateCurrentToken(token, baseUrl);
 
                 if (!authenticated)
                 {

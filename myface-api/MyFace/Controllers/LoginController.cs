@@ -53,7 +53,7 @@ namespace MyFace.Controllers
 
         [EnableCors("_myfaceCorsPolicy")]
         [HttpGet("validate")]
-        public IActionResult Validate()
+        public IActionResult Validate() 
         {
             var token = HttpContext.Request.Cookies["JWT"];
             var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";

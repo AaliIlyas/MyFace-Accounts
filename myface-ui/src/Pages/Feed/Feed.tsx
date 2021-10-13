@@ -8,8 +8,11 @@ import './Feed.scss';
 
 export function Feed(): JSX.Element {
     async function validateButton() {
-        await fetch("https://localhost:5001/login/validate")
-        .then(r => r.json)
+        await fetch("https://localhost:5001/login/validate", {
+            method: 'GET',
+            credentials: 'include',
+        })
+        .then(r => r.json())
         .then(r => console.log(r));
     }
 

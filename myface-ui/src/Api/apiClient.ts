@@ -44,6 +44,7 @@ export async function fetchUsers(searchTerm: string, page: number, pageSize: num
     // debugger;
     const response = await fetch(`https://localhost:5001/users?search=${searchTerm}&page=${page}&pageSize=${pageSize}`, {
         method: "GET",
+        credentials: 'include',
         headers: {
             'Authorization': authString
         }
@@ -61,6 +62,7 @@ export async function fetchUsers(searchTerm: string, page: number, pageSize: num
 export async function fetchUser(userId: string | number, authString: string): Promise<User> {
     const response = await fetch(`https://localhost:5001/users/${userId}`, {
         method: "GET",
+        credentials: 'include',
         headers: {
             'Authorization': authString
         }
@@ -79,6 +81,7 @@ export async function fetchPosts(page: number, pageSize: number, authString: str
     console.log("fetchPosts apiClient: " + authString);
     const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}`, {
         method: "GET",
+        credentials: 'include',
         headers: {
             'Authorization': authString
         }
@@ -96,6 +99,7 @@ export async function fetchPosts(page: number, pageSize: number, authString: str
 export async function fetchPostsForUser(page: number, pageSize: number, userId: string | number, authString: string) {
     const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}&postedBy=${userId}`, {
         method: "GET",
+        credentials: 'include',
         headers: {
             'Authorization': authString
         }
@@ -113,6 +117,7 @@ export async function fetchPostsForUser(page: number, pageSize: number, userId: 
 export async function fetchPostsLikedBy(page: number, pageSize: number, userId: string | number, authString: string) {
     const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}&likedBy=${userId}`, {
         method: "GET",
+        credentials: 'include',
         headers: {
             'Authorization': authString
         }
@@ -130,6 +135,7 @@ export async function fetchPostsLikedBy(page: number, pageSize: number, userId: 
 export async function fetchPostsDislikedBy(page: number, pageSize: number, userId: string | number, authString: string) {
     const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}&dislikedBy=${userId}`, {
         method: "GET",
+        credentials: 'include',
         headers: {
             'Authorization': authString
         }
@@ -147,6 +153,7 @@ export async function fetchPostsDislikedBy(page: number, pageSize: number, userI
 export async function createPost(newPost: NewPost, authString: string) {
     const response = await fetch(`https://localhost:5001/posts/create`, {
         method: "POST",
+        credentials: 'include',
         headers: {
             'Authorization': authString,
             "Content-Type": "application/json"
