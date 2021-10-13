@@ -1,6 +1,4 @@
-﻿import { exception } from "node:console";
-
-export interface ListResponse<T> {
+﻿export interface ListResponse<T> {
     items: T[];
     totalNumberOfItems: number;
     page: number;

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using MyFace.Helpers;
 using MyFace.Repositories;
 using System;
+using Microsoft.AspNetCore.Cors;
 
 namespace MyFace.Controllers
 {
@@ -23,6 +24,7 @@ namespace MyFace.Controllers
             _posts = postsRepo;
         }
 
+        [EnableCors("_myfaceCorsPolicy")]
         [HttpGet("")]
         public IActionResult IsValidAuthentication()
         {
@@ -30,10 +32,10 @@ namespace MyFace.Controllers
             var authHeader = HttpContext.Request.Headers["Authorization"].ToString();
             var authenticated = _posts.IsAthenticated(authHeader);
             var user = _posts.GetUserFromEncoded(authHeader);
-            var token = JWT.GenerateToken(user.Id, user.Role, baseUrl);
 
             if (authenticated)
             {
+                var token = JWT.GenerateToken(user.Id, user.Role, baseUrl);
                 var options = new CookieOptions();
                 options.Expires = DateTime.Now.AddMinutes(5);
                 options.HttpOnly = true;
@@ -49,6 +51,7 @@ namespace MyFace.Controllers
             return Unauthorized();
         }
 
+        [EnableCors("_myfaceCorsPolicy")]
         [HttpGet("validate")]
         public IActionResult Validate()
         {
@@ -74,11 +77,11 @@ namespace MyFace.Controllers
             catch
             {
                 return Problem(
-                     type: "https://tools.ietf.org/html/rfc7231#section-6.5.3",
-                     title: "Not Authorized",
-                     detail: "Either session has expired or the user does not hold sufficient authorization",
-                     statusCode: StatusCodes.Status403Forbidden
-                     );
+                    type: "https://tools.ietf.org/html/rfc7231#section-6.5.3",
+                    title: "Not Authorized",
+                    detail: "Either session has expired or the user does not hold sufficient authorization",
+                    statusCode: StatusCodes.Status403Forbidden
+                    );
             }
         }
     }

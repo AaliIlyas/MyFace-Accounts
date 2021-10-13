@@ -14,6 +14,7 @@ export function Login(): JSX.Element {
 
         fetch('https://localhost:5001/login', {
             method: 'GET',
+            credentials: 'include',
             headers: new Headers({
                 'Authorization': 'Basic ' + btoa(`${username}:${password}`),
                 'Content-Type': 'application/json'
