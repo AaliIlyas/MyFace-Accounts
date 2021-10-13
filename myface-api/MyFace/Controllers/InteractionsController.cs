@@ -45,6 +45,8 @@ namespace MyFace.Controllers
                 var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";
                 var authenticated = JWT.ValidateCurrentToken(token, baseUrl);
 
+                //TODO - refactor the repo to use the JWT user ID instead of username, removing the need for authheader
+
                 if (!authenticated)
                 {
                     return Unauthorized();
