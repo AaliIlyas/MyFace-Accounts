@@ -28,7 +28,7 @@ namespace MyFace.Helpers
             new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
             new Claim("Role", role.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(50),
+                Expires = DateTime.UtcNow.AddMinutes(5),
                 Issuer = myIssuer,
                 Audience = myAudience,
                 SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
@@ -56,7 +56,9 @@ namespace MyFace.Helpers
                     ValidateAudience = true,
                     ValidIssuer = myIssuer,
                     ValidAudience = myAudience,
-                    IssuerSigningKey = mySecurityKey
+                    IssuerSigningKey = mySecurityKey,
+                    ValidateLifetime = true,
+                    LifetimeValidator = LifetimeValidator
                 }, out SecurityToken validatedToken);
             }
             catch
@@ -73,6 +75,15 @@ namespace MyFace.Helpers
 
             var stringClaimValue = securityToken.Claims.First(claim => claim.Type == claimType).Value;
             return stringClaimValue;
+        }
+
+        private static bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters @params)
+        {
+            if (expires != null)
+            {
+                return expires > DateTime.UtcNow;
+            }
+            return false;
         }
     }
 }

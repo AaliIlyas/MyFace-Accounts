@@ -35,7 +35,7 @@ namespace MyFace.Controllers
             if (authenticated)
             {
                 var options = new CookieOptions();
-                options.Expires = DateTime.Now.AddMinutes(1);
+                options.Expires = DateTime.Now.AddMinutes(5);
                 options.HttpOnly = true;
                 Response.Cookies.Append("JWT", token, options);
 
@@ -54,19 +54,32 @@ namespace MyFace.Controllers
         {
             var token = HttpContext.Request.Cookies["JWT"];
             var baseUrl = $"{Request.Scheme}://{Request.Host.Value}/";
-            var valid = JWT.ValidateCurrentToken(token, baseUrl);
-            var claim = JWT.GetClaim(token, "Role");
 
-            if (valid)
+            try
             {
-                return Ok(new AuthenticationResult()
-                {
-                    Success = valid,
-                    Role = claim
-                });
-            }
+                var valid = JWT.ValidateCurrentToken(token, baseUrl);
+                var claim = JWT.GetClaim(token, "Role");
 
-            return Forbid();
+                if (valid)
+                {
+                    return Ok(new AuthenticationResult()
+                    {
+                        Success = valid,
+                        Role = claim
+                    });
+                }
+
+                throw new Exception();
+            }
+            catch
+            {
+                return Problem(
+                     type: "https://tools.ietf.org/html/rfc7231#section-6.5.3",
+                     title: "Not Authorized",
+                     detail: "Either session has expired or the user does not hold sufficient authorization",
+                     statusCode: StatusCodes.Status403Forbidden
+                     );
+            }
         }
     }
 }
